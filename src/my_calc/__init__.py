@@ -2,6 +2,7 @@
 
 import math
 import tkinter as tk
+from functools import partial
 
 BG = "#1c1c1c"
 DARK = "#505050"  # cijfertoetsen
@@ -97,7 +98,7 @@ class Calculator(tk.Tk):
             col = 0
             for text, color, cmd in row:
                 if cmd is None:
-                    cmd = lambda t=text: self.digit(t)
+                    cmd = partial(self.digit, text)
                 span = 1
                 if text == "0":
                     span = 2
