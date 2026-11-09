@@ -4,10 +4,10 @@ import math
 import tkinter as tk
 
 BG = "#1c1c1c"
-DARK = "#505050"      # cijfertoetsen
-LIGHT = "#a5a5a5"     # functietoetsen
-ORANGE = "#ff9f0a"    # bewerkingen
-SCI = "#2e2e2e"       # wetenschappelijke toetsen
+DARK = "#505050"  # cijfertoetsen
+LIGHT = "#a5a5a5"  # functietoetsen
+ORANGE = "#ff9f0a"  # bewerkingen
+SCI = "#2e2e2e"  # wetenschappelijke toetsen
 
 OPS = {
     "+": lambda a, b: a + b,
@@ -33,15 +33,21 @@ class Calculator(tk.Tk):
         self.configure(bg=BG)
         self.resizable(False, False)
 
-        self.current = "0"      # wat er op het scherm staat
+        self.current = "0"  # wat er op het scherm staat
         self.acc: float | None = None
         self.op: str | None = None
-        self.fresh = True       # volgende cijfer begint een nieuw getal
+        self.fresh = True  # volgende cijfer begint een nieuw getal
         self.degrees = True
 
         self.display = tk.Label(
-            self, text="0", anchor="e", bg=BG, fg="white",
-            font=("Helvetica Neue", 44), padx=16, pady=14,
+            self,
+            text="0",
+            anchor="e",
+            bg=BG,
+            fg="white",
+            font=("Helvetica Neue", 44),
+            padx=16,
+            pady=14,
         )
         self.display.grid(row=0, column=0, columnspan=4, sticky="ew")
 
@@ -49,17 +55,42 @@ class Calculator(tk.Tk):
         self._button(1, 1, "√", SCI, lambda: self.unary(math.sqrt))
         self._button(1, 2, "x²", SCI, lambda: self.unary(lambda x: x * x))
         self._button(1, 3, "1/x", SCI, lambda: self.unary(lambda x: 1 / x))
-        self._button(2, 0, "sin", SCI, lambda: self.unary(lambda x: math.sin(self.rad(x))))
-        self._button(2, 1, "cos", SCI, lambda: self.unary(lambda x: math.cos(self.rad(x))))
-        self._button(2, 2, "tan", SCI, lambda: self.unary(lambda x: math.tan(self.rad(x))))
+        self._button(
+            2, 0, "sin", SCI, lambda: self.unary(lambda x: math.sin(self.rad(x)))
+        )
+        self._button(
+            2, 1, "cos", SCI, lambda: self.unary(lambda x: math.cos(self.rad(x)))
+        )
+        self._button(
+            2, 2, "tan", SCI, lambda: self.unary(lambda x: math.tan(self.rad(x)))
+        )
         self._button(2, 3, "π", SCI, self.insert_pi)
 
         rows = [
-            [("AC", LIGHT, self.clear), ("±", LIGHT, self.negate),
-             ("%", LIGHT, lambda: self.unary(lambda x: x / 100)), ("÷", ORANGE, lambda: self.operator("÷"))],
-            [("7", DARK, None), ("8", DARK, None), ("9", DARK, None), ("×", ORANGE, lambda: self.operator("×"))],
-            [("4", DARK, None), ("5", DARK, None), ("6", DARK, None), ("−", ORANGE, lambda: self.operator("−"))],
-            [("1", DARK, None), ("2", DARK, None), ("3", DARK, None), ("+", ORANGE, lambda: self.operator("+"))],
+            [
+                ("AC", LIGHT, self.clear),
+                ("±", LIGHT, self.negate),
+                ("%", LIGHT, lambda: self.unary(lambda x: x / 100)),
+                ("÷", ORANGE, lambda: self.operator("÷")),
+            ],
+            [
+                ("7", DARK, None),
+                ("8", DARK, None),
+                ("9", DARK, None),
+                ("×", ORANGE, lambda: self.operator("×")),
+            ],
+            [
+                ("4", DARK, None),
+                ("5", DARK, None),
+                ("6", DARK, None),
+                ("−", ORANGE, lambda: self.operator("−")),
+            ],
+            [
+                ("1", DARK, None),
+                ("2", DARK, None),
+                ("3", DARK, None),
+                ("+", ORANGE, lambda: self.operator("+")),
+            ],
             [("0", DARK, None), (",", DARK, self.decimal), ("=", ORANGE, self.equals)],
         ]
         for r, row in enumerate(rows, start=3):
@@ -70,16 +101,31 @@ class Calculator(tk.Tk):
                 span = 1
                 if text == "0":
                     span = 2
-                self._button(r, col, text, color, cmd, span=span,
-                             fg="black" if color == LIGHT else "white")
+                self._button(
+                    r,
+                    col,
+                    text,
+                    color,
+                    cmd,
+                    span=span,
+                    fg="black" if color == LIGHT else "white",
+                )
                 col += span
         self.bind("<Key>", self.on_key)
 
     # --- interface -------------------------------------------------------
     def _button(self, row, col, text, color, cmd, span=1, fg="white"):
         # tk.Label i.p.v. tk.Button: macOS negeert kleuren bij tk.Button.
-        lbl = tk.Label(self, text=text, bg=color, fg=fg, cursor="hand2",
-                       font=("Helvetica Neue", 20), width=4 * span, height=2)
+        lbl = tk.Label(
+            self,
+            text=text,
+            bg=color,
+            fg=fg,
+            cursor="hand2",
+            font=("Helvetica Neue", 20),
+            width=4 * span,
+            height=2,
+        )
         lbl.grid(row=row, column=col, columnspan=span, padx=1, pady=1, sticky="nsew")
         lbl.bind("<Button-1>", lambda e: cmd())
         return lbl
@@ -119,7 +165,9 @@ class Calculator(tk.Tk):
 
     def negate(self) -> None:
         if self.current not in ("0", "Fout"):
-            self.show(self.current[1:] if self.current.startswith("-") else "-" + self.current)
+            self.show(
+                self.current[1:] if self.current.startswith("-") else "-" + self.current
+            )
 
     def unary(self, fn) -> None:
         try:

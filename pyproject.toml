@@ -21,3 +21,17 @@ dev = [
     "pyright>=1.1.414",
     "ruff>=0.17.4",
 ]
+
+[tool.ruff]
+line-length = 88               # the Black-compatible default
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade: modernise outdated syntax
+    "B",   # flake8-bugbear: likely bugs
+]
